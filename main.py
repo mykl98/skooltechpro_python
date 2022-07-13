@@ -18,9 +18,16 @@ import base64
 
 #************** Face Recognition ***************
 TOLERANCE = 0.54
-API_LINK = "http://localhost/skooltechpro_web/api"
+#API_LINK = "http://localhost/skooltechpro_web/api"
+API_LINK = "https://skooltech.com/pro/api"
+#SHHS
 SCHOOL_ID = "2NWhWyxbmx"
-path = 'Training_images'
+path = 'shhs_training_images'
+
+#CCPSI
+#SCHOOL_ID = "ivvzCkiUC1"
+#path = 'ccpsi_training_images'
+
 images = []
 classNames = []
 myList = os.listdir(path)
@@ -49,26 +56,27 @@ def findEncodings(images):
 
 encodeListKnown = findEncodings(images)
 
-cap = cv2.VideoCapture(2)
+cap = cv2.VideoCapture(0)
 
 months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
 updateDateFlag = False
 
 window = tk.Tk()
 window.title("SkoolTech Pro")
-window.geometry("1200x600")
+window.geometry("1360x720")
 window.configure(bg="white")
 window.resizable(False, False)
 window.update()
+window.attributes("-fullscreen", True)
 windowWidth = window.winfo_width()
 windowHeight = window.winfo_height()
 
 headerFrame = tk.Frame(window, width=windowWidth, height=80, bg="#000080")
 headerFrame.grid(row=0, column=0, columnspan=6)
 timeLabel = Label(headerFrame, font=("calibri light", 35), fg="white", text="88:88 AM")
-timeLabel.place(x=window.winfo_width()-220, y=25)
+timeLabel.place(x=windowWidth-230, y=25)
 dateLabel = Label(headerFrame, font=("calibri light", 18), fg="white", text="FEB 9, 1986")
-dateLabel.place(x=window.winfo_width()-160, y=0)
+dateLabel.place(x=windowWidth-180, y=0)
 
 footerFrame = tk.Frame(window, width=windowWidth, height=30, bg="#000080")
 footerFrame.grid(row=3, column=0, columnspan=6)
@@ -222,7 +230,7 @@ def cleanDetected():
 def setCleanSchedule():
     global cleanFlag, startTime
     if not cleanFlag:
-        startTime = time.time() + 600
+        startTime = time.time() + 100
         cleanFlag = True
 
 
@@ -290,9 +298,11 @@ def renderDetected(data):
         studentImageLabel = tk.Label(studentFrame, image=studentImage)
         studentImageLabel.place(x=5, y=5)
         studentImageLabel.image = studentImage
-        studentName = tk.Label(studentFrame, anchor="center", text=name, width=22)
+        #studentName = tk.Label(studentFrame, anchor="center", text=name, width=22)
+        studentName = tk.Label(studentFrame, anchor="center", text=name, width=25)
         studentName.place(x=5, y=imageWidth + 10)
-        studentDetails = tk.Label(studentFrame, anchor="center", text=_type + " - " + activity, width=22, fg="white", bg=color)
+        #studentDetails = tk.Label(studentFrame, anchor="center", text=_type + " - " + activity, width=22, fg="white", bg=color)
+        studentDetails = tk.Label(studentFrame, anchor="center", text=_type + " - " + activity, width=25, fg="white", bg=color)
         studentDetails.place(x=5, y=imageWidth + 32)
 
 
