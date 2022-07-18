@@ -29,15 +29,15 @@ API_LINK = "http://localhost/skooltechpro_web/api"
 #API_LINK = "https://skooltech.com/pro/api"
 # SHHS
 # SCHOOL_ID = "2NWhWyxbmx"
-# path = 'shhs_training_images'
+# path = '../shhs_training_images'
 
 # CCPSI
 #SCHOOL_ID = "ivvzCkiUC1"
-#path = 'ccpsi_training_images'
+#path = '../ccpsi_training_images'
 
 #SkoolTech
 SCHOOL_ID = "LeBDKSw1rP"
-path = "skooltech_training_images"
+path = "../skooltech_training_images"
 
 images = []
 classNames = []
