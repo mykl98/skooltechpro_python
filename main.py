@@ -15,18 +15,29 @@ from datetime import date
 from playsound import playsound
 import io
 import base64
+from threading import Thread
+import httpx
 
-#************** Face Recognition ***************
-TOLERANCE = 0.54
-#API_LINK = "http://localhost/skooltechpro_web/api"
-API_LINK = "https://skooltech.com/pro/api"
-#SHHS
-SCHOOL_ID = "2NWhWyxbmx"
-path = 'shhs_training_images'
+# *************** Configs *******************
+SOURCE = 2
+TOLERANCE = 0.50
+CLEAN_UP_DELAY = 10
 
-#CCPSI
+# ************** Face Recognition ***************
+
+API_LINK = "http://localhost/skooltechpro_web/api"
+#API_LINK = "https://skooltech.com/pro/api"
+# SHHS
+# SCHOOL_ID = "2NWhWyxbmx"
+# path = 'shhs_training_images'
+
+# CCPSI
 #SCHOOL_ID = "ivvzCkiUC1"
 #path = 'ccpsi_training_images'
+
+#SkoolTech
+SCHOOL_ID = "LeBDKSw1rP"
+path = "skooltech_training_images"
 
 images = []
 classNames = []
@@ -56,7 +67,7 @@ def findEncodings(images):
 
 encodeListKnown = findEncodings(images)
 
-cap = cv2.VideoCapture(0)
+# cap = cv2.VideoCapture(2)
 
 months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
 updateDateFlag = False
@@ -74,9 +85,9 @@ windowHeight = window.winfo_height()
 headerFrame = tk.Frame(window, width=windowWidth, height=80, bg="#000080")
 headerFrame.grid(row=0, column=0, columnspan=6)
 timeLabel = Label(headerFrame, font=("calibri light", 35), fg="white", text="88:88 AM")
-timeLabel.place(x=windowWidth-230, y=25)
+timeLabel.place(x=windowWidth - 230, y=25)
 dateLabel = Label(headerFrame, font=("calibri light", 18), fg="white", text="FEB 9, 1986")
-dateLabel.place(x=windowWidth-180, y=0)
+dateLabel.place(x=windowWidth - 180, y=0)
 
 footerFrame = tk.Frame(window, width=windowWidth, height=30, bg="#000080")
 footerFrame.grid(row=3, column=0, columnspan=6)
@@ -90,11 +101,10 @@ schoolNameLabel.place(x=85, y=10)
 schoolAddressLabel = Label(headerFrame, font=("calibri light", 12), fg="white", text="FEB 9, 1986")
 schoolAddressLabel.place(x=85, y=45)
 
-frameWidth = (windowWidth/6)-10
-frameHeight = (windowHeight/2)-65
+frameWidth = (windowWidth / 6) - 10
+frameHeight = (windowHeight / 2) - 65
 framePadY = 5
 framePadX = 5
-
 
 frame1 = tk.Frame(window, width=frameWidth, height=frameHeight, bg="#FFFFFF")
 frame1.grid(row=1, column=0, pady=framePadY, padx=framePadX)
@@ -171,11 +181,6 @@ def showMessage(message, type='info', timeout=1000):
         pass
 
 
-def install(fileName, base64Image):
-    if not os.path.isfile("logo.jpg"):
-        open(fileName, 'wb').write(base64.b64decode(base64Image))
-
-
 def getSchoolDetail():
     url = API_LINK + "/school.php"
     data = {'id': SCHOOL_ID}
@@ -230,28 +235,27 @@ def cleanDetected():
 def setCleanSchedule():
     global cleanFlag, startTime
     if not cleanFlag:
-        startTime = time.time() + 100
+        startTime = time.time() + CLEAN_UP_DELAY
         cleanFlag = True
 
 
+def playBeep():
+    playsound("beep.wav", block=False)
+
+
 def markAttendance(_id):
-    global detected
-    if _id not in detected:
-        detected.append(_id)
-        playsound("beep.wav", block=False)
-        setCleanSchedule()
-        url = API_LINK + "/attendance.php"
-        data = {'schoolid': SCHOOL_ID, 'studentid': _id}
-        r = requests.post(url, data=data)
-        response = r.text
-        resp = response.split("*_*")
-        if len(resp) > 0:
-            if resp[0] == "true":
-                renderStudentDetail(resp[1])
-            elif resp[0] == "false":
-                showMessage(resp[1], "warning")
-            else:
-                showMessage(response, "error")
+    url = API_LINK + "/attendance.php"
+    data = {'schoolid': SCHOOL_ID, 'studentid': _id}
+    r = httpx.post(url, data=data)
+    response = r.text
+    resp = response.split("*_*")
+    if len(resp) > 0:
+        if resp[0] == "true":
+            renderStudentDetail(resp[1])
+        elif resp[0] == "false":
+            showMessage(resp[1], "warning")
+        else:
+            showMessage(response, "error")
 
 
 def renderStudentDetail(data):
@@ -273,18 +277,19 @@ def renderStudentDetail(data):
     detectedList.append(student)
     renderDetected(detectedList)
 
+
 def renderDetected(data):
     global color
     i = 0
     for _list in reversed(data):
-        _image = _list[0];
-        name = _list[1];
-        _type = _list[2];
+        _image = _list[0]
+        name = _list[1]
+        _type = _list[2]
         activity = _list[5]
 
         if i > 5:
             studentFrame = tk.Frame(window, width=frameWidth, height=frameHeight, bg=color)
-            studentFrame.grid(row=2, column=i-6, pady=framePadY, padx=framePadX)
+            studentFrame.grid(row=2, column=i - 6, pady=framePadY, padx=framePadX)
         else:
             studentFrame = tk.Frame(window, width=frameWidth, height=frameHeight, bg=color)
             studentFrame.grid(row=1, column=i, pady=framePadY, padx=framePadX)
@@ -298,11 +303,12 @@ def renderDetected(data):
         studentImageLabel = tk.Label(studentFrame, image=studentImage)
         studentImageLabel.place(x=5, y=5)
         studentImageLabel.image = studentImage
-        #studentName = tk.Label(studentFrame, anchor="center", text=name, width=22)
+        # studentName = tk.Label(studentFrame, anchor="center", text=name, width=22)
         studentName = tk.Label(studentFrame, anchor="center", text=name, width=25)
         studentName.place(x=5, y=imageWidth + 10)
-        #studentDetails = tk.Label(studentFrame, anchor="center", text=_type + " - " + activity, width=22, fg="white", bg=color)
-        studentDetails = tk.Label(studentFrame, anchor="center", text=_type + " - " + activity, width=25, fg="white", bg=color)
+        # studentDetails = tk.Label(studentFrame, anchor="center", text=_type + " - " + activity, width=22, fg="white", bg=color)
+        studentDetails = tk.Label(studentFrame, anchor="center", text=_type + " - " + activity, width=25, fg="white",
+                                  bg=color)
         studentDetails.place(x=5, y=imageWidth + 32)
 
 
@@ -310,13 +316,41 @@ getSchoolDetail()
 updateTime()
 updateDate()
 
+
+class VideoGet(tk.Tk):
+    def __init__(self, src=0):
+        self.stream = cv2.VideoCapture(src)
+        (self.grabbed, self.frame) = self.stream.read()
+        self.stopped = False
+
+    def start(self):
+        Thread(target=self.get, args=()).start()
+        return self
+
+    def get(self):
+        while not self.stopped:
+            if not self.grabbed:
+                self.stop()
+            else:
+                (self.grabbed, self.frame) = self.stream.read()
+
+    def stop(self):
+        self.stopped = True
+
+
+video_getter = VideoGet(SOURCE).start()
+
 while True:
     if cleanFlag:
         if time.time() > startTime:
             cleanFlag = False
             cleanDetected()
 
-    success, img = cap.read()
+    if video_getter.stopped:
+        video_getter.stop()
+        break
+
+    img = video_getter.frame
     imgS = cv2.resize(img, (0, 0), None, 0.25, 0.25)
     imgS = cv2.cvtColor(imgS, cv2.COLOR_BGR2RGB)
 
@@ -335,8 +369,13 @@ while True:
             y1, x2, y2, x1 = faceLoc
             y1, x2, y2, x1 = y1 * 4, x2 * 4, y2 * 4, x1 * 4
             cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
-            markAttendance(studentId)
-            #print(studentId)
+            if studentId not in detected:
+                t1 = Thread(target=playBeep())
+                t1.start()
+                setCleanSchedule()
+                detected.append(studentId)
+                t2 = Thread(target=markAttendance(studentId))
+                t2.start()
 
     image = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
     image = Image.fromarray(image)
@@ -344,5 +383,3 @@ while True:
     videoLabel.configure(image=image)
     window.update_idletasks()
     window.update()
-    cv2.waitKey(1)
-
