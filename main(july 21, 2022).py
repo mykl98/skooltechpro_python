@@ -65,6 +65,8 @@ def findEncodings(images):
 
 encodeListKnown = findEncodings(images)
 
+# cap = cv2.VideoCapture(2)
+
 months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
 updateDateFlag = False
 
