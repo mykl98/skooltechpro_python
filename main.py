@@ -18,7 +18,7 @@ from threading import Thread
 # *************** Configs *******************
 SOURCE = 0
 TOLERANCE = 0.50
-CLEAN_UP_DELAY = 1
+CLEAN_UP_DELAY = 10
 
 # ************** School and API Configs ***************
 # API_LINK = "http://localhost/skooltechpro_web/api"
@@ -218,6 +218,13 @@ def playBeep():
     playsound("beep.wav", block=False)
 
 
+def SendNotification(id):
+    url = API_LINK + "/send-notification.php"
+    data = {'schoolid': SCHOOL_ID, 'studentid': id}
+    thread = CallApi(callApiUrl=url, callApiData=data, callApiType="sendNotification")
+    thread.start()
+
+
 def GetStudentDetail(id):
     global callApiFlag, callApiThread
     url = API_LINK + "/attendance.php"
@@ -232,6 +239,7 @@ def RenderStudentDetail(data):
     details = json.loads(data)
     base64Image = details[0]["image"].split(",")
     image = base64Image[1]
+    id = details[0]["id"]
     name = details[0]["name"]
     _type = details[0]["type"]
     grade = details[0]["grade"]
@@ -246,6 +254,9 @@ def RenderStudentDetail(data):
     student = [image, name, _type, grade, section, activity]
     detectedList.append(student)
     RenderDetected(detectedList)
+    if _type == "Student":
+        SendNotification(id)
+
 
 
 def RenderDetected(data):
