@@ -24,7 +24,7 @@ CLEAN_UP_DELAY = 10
 API_LINK = "https://skooltech.com/pro/api"
 
 SCHOOL_ID = "LeBDKSw1rP"
-path = 'training_images'
+path = '/home/mykl/skooltechpro_python/training_images'
 # ***************** Variables ****************
 myList = os.listdir(path)
 images = []
