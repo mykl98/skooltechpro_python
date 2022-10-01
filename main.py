@@ -21,20 +21,10 @@ TOLERANCE = 0.50
 CLEAN_UP_DELAY = 10
 
 # ************** School and API Configs ***************
-# API_LINK = "http://localhost/skooltechpro_web/api"
 API_LINK = "https://skooltech.com/pro/api"
-# SHHS
-# SCHOOL_ID = "2NWhWyxbmx"
-# path = '../shhs_training_images'
 
-# CCPSI
-SCHOOL_ID = "ivvzCkiUC1"
-path = '../ccpsi_training_images'
-
-# SkoolTech
-# SCHOOL_ID = "LeBDKSw1rP"
-# path = "../skooltech_training_images"
-
+SCHOOL_ID = "LeBDKSw1rP"
+path = 'training_images'
 # ***************** Variables ****************
 myList = os.listdir(path)
 images = []
@@ -79,8 +69,8 @@ window.title("SkoolTech Pro")
 window.geometry("1360x720")
 window.configure(bg="white")
 window.resizable(False, False)
-window.update()
 window.attributes("-fullscreen", True)
+window.update()
 windowWidth = window.winfo_width()
 windowHeight = window.winfo_height()
 window.grid_columnconfigure((0, 1, 2, 3, 4, 5), weight=1, uniform="column")
