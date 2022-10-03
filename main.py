@@ -229,7 +229,7 @@ def RenderStudentDetail(data):
     details = json.loads(data)
     base64Image = details[0]["image"].split(",")
     image = base64Image[1]
-    id = details[0]["id"]
+    #id = details[0]["id"]
     name = details[0]["name"]
     _type = details[0]["type"]
     grade = details[0]["grade"]
@@ -245,6 +245,7 @@ def RenderStudentDetail(data):
     detectedList.append(student)
     RenderDetected(detectedList)
     if _type == "Student":
+        id = details[0]["id"]
         SendNotification(id)
 
 
