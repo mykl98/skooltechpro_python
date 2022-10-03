@@ -257,6 +257,8 @@ def RenderDetected(data):
         _image = _list[0]
         name = _list[1]
         _type = _list[2]
+        grade = _list[3]
+        section = _list[4]
         activity = _list[5]
 
         if i > 5:
@@ -276,11 +278,20 @@ def RenderDetected(data):
         studentImageLabel.place(x=5, y=5)
         studentImageLabel.image = studentImage
         # studentName = tk.Label(studentFrame, anchor="center", text=name, width=22)
-        studentName = tk.Label(studentFrame, anchor="center", text=name, width=25)
+        studentName = tk.Label(studentFrame, anchor="center", text=name, width=29)
         studentName.place(x=5, y=imageWidth + 10)
-        studentDetails = tk.Label(studentFrame, anchor="center", text=_type + " - " + activity, width=25, fg="white",
-                                  bg=color)
-        studentDetails.place(x=5, y=imageWidth + 32)
+        studentGradeAndSection = tk.Label(studentFrame, anchor="center", text=grade + " - " + section, width=29)
+        studentGradeAndSection.place(x=5, y=imageWidth + 40)
+        if activity == "Logged In":
+            studentDetails = tk.Label(studentFrame, anchor="center", text=_type + " - " + activity, width=29,
+                                      fg="white",
+                                      bg=color)
+            studentDetails.place(x=5, y=imageWidth + 60)
+        else:
+            studentDetails = tk.Label(studentFrame, anchor="center", text=_type + " - " + activity, width=29,
+                                      fg="white",
+                                      bg="#ff0000")
+            studentDetails.place(x=5, y=imageWidth + 60)
 
 
 GetSchoolDetail()

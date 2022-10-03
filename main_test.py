@@ -21,23 +21,10 @@ TOLERANCE = 0.50
 CLEAN_UP_DELAY = 1
 
 # ************** School and API Configs ***************
-# API_LINK = "http://localhost/skooltechpro_web/api"
-API_LINK = "https://skooltech.com/pro/api"
-# SHHS
-# SCHOOL_ID = "2NWhWyxbmx"
-# path = '../shhs_training_images'
+PI_LINK = "https://skooltech.com/pro/api"
 
-# CCPSI
-#SCHOOL_ID = "ivvzCkiUC1"
-#path = './ccpsi_training_images'
-
-# OLPHA
 SCHOOL_ID = "LeBDKSw1rP"
-path = './olpha_training_images'
-
-# SKOOLTECH
-# SCHOOL_ID = "LeBDKSw1rP"
-# path = "../skooltech_training_images"
+path = '/home/mykl/skooltechpro_python/training_images'
 
 # ***************** Variables ****************
 myList = os.listdir(path)
@@ -219,7 +206,7 @@ def setCleanSchedule():
 
 
 def playBeep():
-    playsound("beep.wav", block=False)
+    playsound("/home/mykl/skooltechpro_python/beep.wav", block=False)
 
 
 def SendNotification(id):
