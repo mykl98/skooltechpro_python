@@ -116,7 +116,7 @@ def updateDate():
     updateDateFlag = True
     today = date.today()
     year = today.year
-    month = months[today.month]
+    month = months[today.month-1]
     day = today.day
     dateString = month + " " + str(day) + "," + str(year)
     dateLabel.configure(text=dateString)
